@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../AutoPilotInput/Settings.cs" Link="Settings.cs" />
+    <Compile Include="../AutoPilotInput/HotkeyService.cs" Link="HotkeyService.cs" />
+    <Compile Include="../AutoPilotInput/Core/Models.cs" Link="Core/Models.cs" />
+    <Compile Include="../AutoPilotInput/Core/NativeInput.cs" Link="Core/NativeInput.cs" />
+  </ItemGroup>
+</Project>

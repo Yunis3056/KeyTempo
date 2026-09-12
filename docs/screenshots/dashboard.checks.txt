@@ -1,0 +1,11 @@
+PASS No default key
+PASS Key selection saves through UI binding
+PASS Invalid interval cannot replace valid config
+PASS Edited interval saves
+PASS Random range editor saves
+PASS Immediate mode saves
+PASS Mouse action can be added
+PASS Mouse positions can be reordered
+PASS Existing coordinates cannot be silently reinterpreted
+PASS Theme switch applies
+PASS English UI switch applies
