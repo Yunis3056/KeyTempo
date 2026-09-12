@@ -19,9 +19,9 @@ Windows 10 / 11 x64 · 简体中文 / English · .NET 8 WPF · MIT
 | 文件 | 适用场景 |
 | --- | --- |
 | `KeyTempo.exe` | 直接下载、直接运行 |
-| `KeyTempo-1.0.0-win-x64-portable.zip` | 程序、使用指南与许可证，适合完整保存 |
-| `KeyTempo-1.0.0-win-x64-setup.exe` | 安装到当前用户目录，创建快捷方式并支持卸载 |
-| `KeyTempo-1.0.0-source.zip` | 源码、测试和构建说明 |
+| `KeyTempo-1.0.1-win-x64-portable.zip` | 程序、使用指南与许可证，适合完整保存 |
+| `KeyTempo-1.0.1-win-x64-setup.exe` | 安装到当前用户目录，创建快捷方式并支持卸载 |
+| `KeyTempo-1.0.1-source.zip` | 源码、测试和构建说明 |
 | `SHA256SUMS.txt` | 核对下载文件的 SHA-256 校验值 |
 
 ## 快速开始

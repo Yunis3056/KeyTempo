@@ -33,7 +33,7 @@ public partial class MainWindow
         var oldLanguage=_settings.Language;
         _settings.Theme=ThemeCombo.SelectedIndex==1?"Light":"Dark";_settings.Language=LanguageCombo.SelectedIndex==1?"en-US":"zh-CN";_settings.Effects=MotionCombo.SelectedIndex switch{0=>"PowerSaving",2=>"Fancy",_=>"Standard"};_settings.Accent=AccentBox.Text;_settings.Sound=SoundCheck.IsChecked==true;_settings.Notifications=NotificationsCheck.IsChecked==true;_settings.GitHubRepository=RepositoryBox.Text;
         _settings.TargetErrorPolicy=TargetPolicyCombo.SelectedIndex switch{1=>"PauseAll",2=>"SkipCycle",_=>"PauseAction"};_settings.InputErrorPolicy=InputPolicyCombo.SelectedIndex switch{1=>"PauseAll",2=>"SkipCycle",_=>"PauseAction"};_settings.PointErrorPolicy=PointPolicyCombo.SelectedIndex switch{1=>"PauseAction",2=>"PauseAll",_=>"SkipCycle"};UpdatePolicies();
-        if(oldLanguage!=_settings.Language){FillChoices();LoadSettings();LoadForm();_loading=false;if(_tray is not null){_tray.Dispose();CreateTray();}}
+        if(oldLanguage!=_settings.Language){FillChoices();LoadSettings();LoadForm();_loading=false;if(_tray is not null)CreateTray();}
         ApplyAppearance();UpdateStatus();SaveConfiguration();
     }
     private void UpdatePolicies()
@@ -86,7 +86,8 @@ public partial class MainWindow
             using var client=new HttpClient{Timeout=TimeSpan.FromSeconds(15)};client.DefaultRequestHeaders.UserAgent.ParseAdd("KeyTempo/1.0");using var response=await client.GetAsync($"https://api.github.com/repos/{repo}/releases/latest");
             if(response.StatusCode==System.Net.HttpStatusCode.NotFound){ShowToast(L("仓库尚无公开 Release，或仓库地址不存在。","No public release found, or the repository does not exist."));return;}
             response.EnsureSuccessStatusCode();using var json=JsonDocument.Parse(await response.Content.ReadAsStringAsync());var tag=json.RootElement.GetProperty("tag_name").GetString()??"";
-            if(Version.TryParse(tag.TrimStart('v','V'),out var latest)&&latest<=new Version(1,0,0)){ShowToast(L("当前已是最新版本。","You are up to date."));return;}
+            var current=typeof(App).Assembly.GetName().Version??new Version(1,0,0);
+            if(Version.TryParse(tag.TrimStart('v','V'),out var latest)&&new Version(latest.Major,latest.Minor,Math.Max(0,latest.Build),Math.Max(0,latest.Revision))<=current){ShowToast(L("当前已是最新版本。","You are up to date."));return;}
             if(System.Windows.MessageBox.Show(this,L($"GitHub 最新版本：{tag}。打开下载页面？",$"Latest GitHub release: {tag}. Open the download page?"),"KeyTempo",MessageBoxButton.YesNo,MessageBoxImage.Information)==MessageBoxResult.Yes)Process.Start(new ProcessStartInfo($"https://github.com/{repo}/releases/latest"){UseShellExecute=true});
         }
         catch(Exception ex){ShowToast(L("检查失败：","Update check failed: ")+ex.Message);}finally{button.IsEnabled=true;}

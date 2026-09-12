@@ -24,6 +24,7 @@ public partial class MainWindow : Window
     private readonly Dictionary<Guid, (TextBlock Name, TextBlock Info, TextBlock State)> _rows = [];
     private HotkeyService? _hotkeys;
     private System.Windows.Forms.NotifyIcon? _tray;
+    private System.Drawing.Icon? _trayIcon;
     private bool _loading = true, _recordKey, _recordPoints, _closing, _tickBusy, _hotkeysReady, _pendingStart, _dirty;
     private int _operation, _toastVersion;
     private DateTime _lastNotification = DateTime.MinValue;
@@ -132,6 +133,6 @@ public partial class MainWindow : Window
         }
         _closing=true;_operation++;_uiTimer.Stop();_saveTimer.Stop();SaveForm(false);_engine.Dispose();_hotkeys?.Dispose();
         Microsoft.Win32.SystemEvents.PowerModeChanged-=PowerModeChanged;Microsoft.Win32.SystemEvents.SessionSwitch-=SessionChanged;
-        if(_tray is not null){_tray.Visible=false;_tray.Dispose();}
+        DisposeTray();_trayIcon?.Dispose();_trayIcon=null;
     }
 }

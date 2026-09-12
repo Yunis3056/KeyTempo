@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Numeric version (for example 1.0.0)'
+        description: 'Numeric version (for example 1.0.1)'
         required: false
-        default: '1.0.0'
+        default: '1.0.1'
 
 permissions:
   contents: read
@@ -54,7 +54,7 @@ jobs:
         env:
           REQUESTED_VERSION: ${{ inputs.version }}
         run: |
-          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME -replace '^v', '' } elseif ($env:REQUESTED_VERSION) { $env:REQUESTED_VERSION } else { '1.0.0' }
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME -replace '^v', '' } elseif ($env:REQUESTED_VERSION) { $env:REQUESTED_VERSION } else { '1.0.1' }
           ./scripts/publish.ps1 -Version $version -RequireInstaller
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

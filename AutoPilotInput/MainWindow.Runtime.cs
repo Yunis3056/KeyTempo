@@ -66,13 +66,29 @@ public partial class MainWindow
         NextText.Text=next?.NextRun is not null?L("下一次执行  ","Next action  ")+next.NextRun.Value.LocalDateTime.ToString("HH:mm:ss"):paused?L("剩余计时已保留","Remaining time preserved"):L("配置完成后，即可启程","Ready when you are");
         CountText.Text=statuses.Sum(s=>s.Count).ToString();var last=statuses.Where(s=>s.LastRun.HasValue).MaxBy(s=>s.LastRun);LastText.Text=L("最近执行 ","Last run ")+(last?.LastRun?.LocalDateTime.ToString("HH:mm:ss")??"—");
         Editor.IsEnabled=_selected is not null&&running.Count==0&&!_pendingStart;HotkeyText.Text=$"{_settings.StartHotkey}  "+L("开始 / 暂停","Start / pause")+$"     {_settings.StopHotkey}  "+L("停止","Stop")+"     ·     MIT";FooterText.Text="●  "+L("离线运行","Offline")+"   ·   "+state;
-        if(_tray is not null&&_trayState!=state){_trayState=state;var text="KeyTempo · "+state;_tray.Text=text[..Math.Min(63,text.Length)];_tray.Icon=running.Count>0?System.Drawing.SystemIcons.Information:paused?System.Drawing.SystemIcons.Warning:System.Drawing.SystemIcons.Application;}
+        if(_tray is not null&&_trayState!=state){_trayState=state;var text="KeyTempo · "+state;_tray.Text=text[..Math.Min(63,text.Length)];}
         UpdateRows();
     }
     private void CreateTray()
     {
-        _tray=new System.Windows.Forms.NotifyIcon{Icon=System.Drawing.SystemIcons.Application,Text="KeyTempo",Visible=true};
+        DisposeTray();
+        _trayIcon ??= LoadTrayIcon();
+        _trayState="";
+        _tray=new System.Windows.Forms.NotifyIcon{Icon=_trayIcon,Text="KeyTempo",Visible=true};
         var menu=new System.Windows.Forms.ContextMenuStrip();menu.Items.Add(L("显示窗口","Show window"),null,(_,_)=>ShowMain());menu.Items.Add(L("开始 / 暂停","Start / pause"),null,(_,_)=>Toggle(false));menu.Items.Add(L("停止全部","Stop all"),null,(_,_)=>StopAll());menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());menu.Items.Add(L("退出","Exit"),null,(_,_)=>Close());_tray.ContextMenuStrip=menu;_tray.DoubleClick+=(_,_)=>ShowMain();
+    }
+    private static System.Drawing.Icon LoadTrayIcon()
+    {
+        // Read the embedded resource so portable single-file builds need no adjacent .ico file.
+        using var stream=System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Assets/app.ico"))!.Stream;
+        using var icon=new System.Drawing.Icon(stream,System.Windows.Forms.SystemInformation.SmallIconSize);
+        return (System.Drawing.Icon)icon.Clone();
+    }
+    private void DisposeTray()
+    {
+        if(_tray is null)return;
+        var menu=_tray.ContextMenuStrip;
+        _tray.Visible=false;_tray.Dispose();menu?.Dispose();_tray=null;
     }
     private void Notify(string title,string message,bool important)
     {
